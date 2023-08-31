@@ -1,68 +1,31 @@
-const express = require('express')
-
 const fs = require('fs');
-const path = require('path');
 
-// const itemsDb = path.join(__dirname,  'items.json');
 
-const items = [];
-
-// create item
 const createItem = (req, res) => {
+          //get the existing items
+    const items = getItemData()
+      const item = req.body;
 
-    const item = req.body;
+       //append the item data
     items.push(item)
-
+    //save the new user data
+    saveItemData(items);
     return res.status(201).json({
         data: items,
         error: null
     })
+
+
 };
 
-const getAllItems = (req, res) => {
-    res.json(items)
+const saveItemData = (data) => {
+    const stringifyData = JSON.stringify(data)
+    fs.writeFileSync('items.json', stringifyData)
+}
+//get the user data from json file
+const getItemData = () => {
+    const jsonData = fs.readFileSync('items.json')
+    return JSON.parse(jsonData)   
 };
 
-const getOneItem = (req,res)=>{
-    const id = req.params.id 
-    const oneItem = items.find((item)=>{
-        return item.id == parseInt(id)
-    })
-    if(!oneItem){
-        res.status(404).send(`Item not found`)
-    }
-    res.status(200).json(oneItem)
-}
-
-const updateItem = (req, res)=>{
-    const id = req.params.id
-    const update = req.body
-    const foundIndex = items.findIndex(item=>item.id == parseInt(id))
-    if(foundIndex== -1){
-        res.end(`item with id ${id} is not found`)
-        return
-    }
-    items[foundIndex] = {...items[foundIndex], ...update}
-    res.status(200).json(items[foundIndex])
-}
-
-const deleteItem = (req,res)=>{
-    const id = req.params.id
-    const foundIndex = items.findIndex(item=>item.id == parseInt(id))
-    if(foundIndex== -1){
-        res.end(`item with id:${id} is not found`)
-        return
-    }
-    students.splice(foundIndex, 1)
-    res.end(`item with id:${id}, deleted successfully`)
-}
-
-
-module.exports = {
-    createItem,
-    getAllItems,
-    getOneItem,
-    updateItem,
-    deleteItem
-}
-
+module.exports = { createItem };
