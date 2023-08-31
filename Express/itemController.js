@@ -17,6 +17,12 @@ const createItem = (req, res) => {
 
 
 };
+const getAllItems = (req, res) => {
+    const items = getItemData()
+    res.send(items);
+};
+
+
 
 const saveItemData = (data) => {
     const stringifyData = JSON.stringify(data)
@@ -28,4 +34,4 @@ const getItemData = () => {
     return JSON.parse(jsonData)   
 };
 
-module.exports = { createItem };
+module.exports = { createItem, getAllItems };
