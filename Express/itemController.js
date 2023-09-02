@@ -22,6 +22,20 @@ const getAllItems = (req, res) => {
     res.send(items);
 };
 
+const getItem = (req, res) => {
+    const id = req.params.id 
+
+    const items = getItemData()
+    const item = items.find((item)=>{
+        return item.id == parseInt(id)
+    })
+    if(!item){
+        res.status(404).send(`Item not found`)
+    }
+    res.status(200).json(item)
+};
+
+
 
 
 const saveItemData = (data) => {
@@ -34,4 +48,4 @@ const getItemData = () => {
     return JSON.parse(jsonData)   
 };
 
-module.exports = { createItem, getAllItems };
+module.exports = { createItem, getAllItems, getItem };
