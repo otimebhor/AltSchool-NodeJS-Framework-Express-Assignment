@@ -35,17 +35,37 @@ const getItem = (req, res) => {
     res.status(200).json(item)
 };
 
+const updateItem = (req, res) => {
+    const id = req.params.id
+    //get the update item
+    const item = req.body
+    //get the existing items
+    const items = getItemData()
+    //check if the item exist    
+    const findItem = items.find( item => item.id === parseInt(id) )
+    if (!findItem) {
+        return res.status(409).send({error: true, msg: 'item does not exist'})
+    }
+    //filter the items
+    const updateItem = items.filter( item => item.id === parseInt(id))
+    //push the updated item
+    updateItem.push(item)
+    //finally save it
+    saveItemData(updateItem)
+    res.send({success: true, msg: 'Item updated successfully'})
 
+
+};
 
 
 const saveItemData = (data) => {
     const stringifyData = JSON.stringify(data)
     fs.writeFileSync('items.json', stringifyData)
 }
-//get the user data from json file
+//get the item data from json file
 const getItemData = () => {
     const jsonData = fs.readFileSync('items.json')
     return JSON.parse(jsonData)   
 };
 
-module.exports = { createItem, getAllItems, getItem };
+module.exports = { createItem, getAllItems, getItem, updateItem};
